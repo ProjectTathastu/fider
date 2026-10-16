@@ -188,8 +188,6 @@ func isNotFound(err error) bool {
 }
 
 func wrap(err error, format string, a ...any) error {
-	if awsErr, ok := err.(awserr.Error); ok {
-		return errors.Wrap(awsErr.OrigErr(), format, a...)
-	}
+	// S3 response errors may have no OrigErr; preserve the response error itself.
 	return errors.Wrap(err, format, a...)
 }

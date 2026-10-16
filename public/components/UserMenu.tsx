@@ -6,6 +6,8 @@ import IconCog from "@fider/assets/images/heroicons-cog.svg"
 import IconWrench from "@fider/assets/images/heroicons-wrenchscrewdriver.svg"
 import IconLeft from "@fider/assets/images/heroicons-arrowleft-rectangle.svg"
 
+import IconBookmark from "@fider/assets/images/heroicons-bookmark.svg"
+
 export const UserMenu = () => {
   const fider = useFider()
 
@@ -13,6 +15,9 @@ export const UserMenu = () => {
     <div className="c-menu-user">
       <Dropdown position="left" renderHandle={<Avatar user={fider.session.user} />}>
         <div className="p-2 text-medium uppercase">{fider.session.user.name}</div>
+        <Dropdown.ListItem href="/saved" icon={IconBookmark}>
+          <Trans id="saved.title">Saved</Trans>
+        </Dropdown.ListItem>
         <Dropdown.ListItem href="/settings" icon={IconCog}>
           <Trans id="menu.mysettings">My Settings</Trans>
         </Dropdown.ListItem>

@@ -53,6 +53,10 @@ func (s Service) Init() {
 	bus.AddHandler(assignTag)
 	bus.AddHandler(unassignTag)
 
+	bus.AddHandler(setPostSaved)
+	bus.AddHandler(getPostSaved)
+	bus.AddHandler(getSavedPosts)
+
 	bus.AddHandler(addVote)
 	bus.AddHandler(removeVote)
 	bus.AddHandler(listPostVotes)

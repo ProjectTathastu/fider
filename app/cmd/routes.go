@@ -147,6 +147,7 @@ func routes(r *web.Engine) *web.Engine {
 		// From this step, a User is required
 		ui.Use(middlewares.IsAuthenticated())
 
+		ui.Get("/saved", handlers.SavedPosts())
 		ui.Get("/settings", handlers.UserSettings())
 		ui.Get("/notifications", handlers.Notifications())
 		ui.Get("/notifications/:id", handlers.ReadNotification())
@@ -253,7 +254,11 @@ func routes(r *web.Engine) *web.Engine {
 	membersApi := r.Group()
 	{
 		membersApi.Use(middlewares.IsAuthenticated())
+		membersApi.Get("/api/v1/saved", apiv1.SavedPosts())
+		membersApi.Get("/api/v1/posts/:number/saved", apiv1.GetPostSaved())
 		membersApi.Use(middlewares.BlockLockedTenants())
+		membersApi.Put("/api/v1/posts/:number/saved", apiv1.SetPostSaved(true))
+		membersApi.Delete("/api/v1/posts/:number/saved", apiv1.SetPostSaved(false))
 
 		membersApi.Post("/api/v1/posts", apiv1.CreatePost())
 		membersApi.Put("/api/v1/posts/:number", apiv1.UpdatePost())

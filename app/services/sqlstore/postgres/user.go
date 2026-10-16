@@ -90,6 +90,7 @@ func deleteCurrentUser(ctx context.Context, c *cmd.DeleteCurrentUser) error {
 			{"notifications", "user_id"},
 			{"notifications", "author_id"},
 			{"post_votes", "user_id"},
+			{"saved_posts", "user_id"},
 			{"post_subscribers", "user_id"},
 			{"email_verifications", "user_id"},
 		}
