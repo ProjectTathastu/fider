@@ -18,3 +18,49 @@ MinIO fixture identity/bucket on 9000 without changing native root credentials.
 Do not commit runtime configuration, credentials, generated bundles or preview
 helpers. Desktop/phone preview with two disposable users remains an acceptance
 criterion; record evidence and explicitly name anything not verified.
+
+## Implementation and evidence
+
+- Persistence/API committed first; UI/navigation/catalogs committed second.
+  `saved_posts` has a unique tenant/user/post primary key. Writes resolve the post
+  through `getPostByNumber`; lists reuse `buildSinglePostQuery`, so deleted and
+  inaccessible moderated posts are excluded using the original detail rules.
+  User/tenant deletion clears saved rows. No vote/subscription writes were added.
+- The rebuilt checkout started at `ccd5428`; the deleted attempt's commit was not
+  present. Its reported build failure was not reproduced by the focused baseline
+  `go build -o /tmp/fider-baseline .`. No speculative application workaround was
+  made for that excerpt or the prior S3 panic.
+- Prerequisites: installed the existing godotenv executable in `/usr/local/bin`
+  and checked discovery using `PATH=/usr/local/bin:/usr/bin:/bin`. `pg_isready -h
+  127.0.0.1 -p 5566` reported accepting connections; SQL authenticated as the test
+  role to the test database and found `pg_trgm`. MinIO readiness returned HTTP
+  200; the fixture identity successfully authenticated to `test-bucket`. Native
+  MinIO credentials and tracked `.test.env` were unchanged. The focused unchanged
+  `TestBlobStorage/Test_S3_AllOperations` test passed.
+- Focused checks passed:
+  - `godotenv -f .test.env go test ./app/services/sqlstore/postgres ./app/handlers/apiv1 -run 'TestSaved' -race -count=1`
+  - `godotenv -f .test.env go test ./app/handlers -run 'TestSavedPage' -count=1`
+  - `TZ=GMT npx jest public/components/PostDetails/SavePostButton.test.tsx public/pages/Saved/Saved.page.test.tsx --runInBand` (8 tests)
+  - ESLint on the new components/tests and account menu; `git diff --check`.
+  - Go application build, catalog compilation, SSR bundling, and development
+    webpack build to a temporary directory. Webpack reported one CSS ordering
+    warning between existing TagsSelect and PostDetails styles.
+  - All 21 source catalogs retained their existing keys and translations, adding
+    only eight Saved messages each. Non-English messages use existing English
+    fallback until translated.
+- Plain `npx tsc --noEmit --pretty false` reported installed dependency declaration
+  errors (Lingui, Tiptap, Node and Playwright). Application source type checking
+  with `--skipLibCheck` passed. Compiler settings and dependency files were not
+  changed; the plain TypeScript check is not claimed to pass.
+- Chromium preview at 1440x1000 and 390x844 used a separate disposable database,
+  never the validation database. Two disposable users exercised post creation,
+  save/unsave, reload, sign-out/sign-in persistence, private lists/empty states,
+  account navigation, original links, search/modal details and anonymous rejection.
+  Voting/following remained set after save/unsave and reload; one user's unsave
+  left the other's saved row intact. Screenshots were inspected, phone overflow
+  was absent and no browser page errors were observed. Preview files and
+  generated bundles remain outside Git. Fixture verification links were used;
+  email delivery is unverified.
+- Full configured validation (including complete `make test`) remains owned by
+  SAHR and was not run in this implementation stage. Publication is deferred to
+  SAHR's later fork-only draft PR stage; no push, gh, PR or merge was performed.

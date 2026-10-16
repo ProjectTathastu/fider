@@ -82,3 +82,26 @@ func TestSavedPosts_AuthorizationAndVisibility(t *testing.T) {
 	Expect(errors.Cause(bus.Dispatch(jonSnowCtx, save))).Equals(app.ErrNotFound)
 	Expect(errors.Cause(bus.Dispatch(aryaStarkCtx, &cmd.SetPostSaved{Number: 999999, Saved: true}))).Equals(app.ErrNotFound)
 }
+
+func TestSavedPosts_DeletedAccountsAndTenantsAreCleanedUp(t *testing.T) {
+	SetupDatabaseTest(t)
+	defer TeardownDatabaseTest()
+	post := &cmd.AddNewPost{Title: "Account cleanup"}
+	Expect(bus.Dispatch(jonSnowCtx, post)).IsNil()
+	save := &cmd.SetPostSaved{Number: post.Result.Number, Saved: true}
+	Expect(bus.Dispatch(aryaStarkCtx, save)).IsNil()
+	Expect(bus.Dispatch(aryaStarkCtx, &cmd.DeleteCurrentUser{})).IsNil()
+	var count int
+	Expect(trx.Scalar(&count, "SELECT COUNT(*) FROM saved_posts WHERE user_id=$1", aryaStark.ID)).IsNil()
+	Expect(count).Equals(0)
+	Expect(bus.Dispatch(jonSnowCtx, save)).IsNil()
+	other := &cmd.AddNewPost{Title: "Keep other tenant bookmark"}
+	Expect(bus.Dispatch(tonyStarkCtx, other)).IsNil()
+	Expect(bus.Dispatch(tonyStarkCtx, &cmd.SetPostSaved{Number: other.Result.Number, Saved: true})).IsNil()
+	Expect(bus.Dispatch(demoTenantCtx, &cmd.DeleteTenant{TenantID: demoTenant.ID})).IsNil()
+	Expect(trx.Scalar(&count, "SELECT COUNT(*) FROM saved_posts WHERE tenant_id=$1", demoTenant.ID)).IsNil()
+	Expect(count).Equals(0)
+	list := &query.GetSavedPosts{}
+	Expect(bus.Dispatch(tonyStarkCtx, list)).IsNil()
+	Expect(list.Result).HasLen(1)
+}
