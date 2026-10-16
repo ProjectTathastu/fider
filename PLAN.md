@@ -128,3 +128,46 @@ criterion; record evidence and explicitly name anything not verified.
   remain unverified in this repair session. The database fixture is machine-local
   and must be restored if validation uses another environment. No push, gh, PR
   or merge was performed.
+
+## Validation attempt 3 storage authentication and error propagation
+
+- Reproduced the reported panic with
+  `godotenv -f .test.env go test ./app/services/blob -run '^TestBlobStorage/Test_S3_AllOperations$' -count=1`.
+  Read-only inspection identified the Silo listener on localhost:9000. Readiness
+  returned HTTP 200, but direct AWS SDK probes using the unchanged test config
+  returned HTTP 403: `HeadBucket` reported `Forbidden` and `GetObject` reported
+  `InvalidAccessKeyId`. Both AWS errors had nil `OrigErr`. The available service
+  log last changed at 16:19:35 UTC, before the supplied 16:23:24–16:24:53 check
+  window, and supplied no request-correlated failure diagnostics. The direct
+  probes establish the current authentication failure, not historical log health.
+- Source trace: S3 operations call the shared `wrap`, which previously extracted
+  `awserr.Error.OrigErr`. `errors.Wrap(nil, ...)` returns nil. Thus authentication
+  failures from writes and reads were reported as success, and the read left
+  `q.Result` nil before `AllOperations` dereferenced it at line 120. Image handlers
+  also consume the result after checking the returned error. Preserve the AWS
+  error itself so failures remain failures, including their AWS code and cause.
+  `NoSuchKey` still maps to `blob.ErrNotFound`; no authorization, readiness or
+  integration assertions were removed or bypassed.
+- Restored the fixture identity from the existing test environment through
+  `mcli admin user add`, `mcli admin policy create`, and `mcli admin policy attach`.
+  The policy allows S3 operations only on the configured disposable test bucket.
+  The existing native root credentials were used without printing or changing
+  them. Temporary administrative configuration and diagnostic scripts live in
+  `/tmp`, outside Git. Tracked environment/configuration files are unchanged.
+  Before bucket creation the probe changed from 403 to `NoSuchBucket` (404);
+  after the unchanged integration setup it reports `HeadBucket OK`. A deleted
+  fixture object returns `NoSuchKey` (404), preserving expected missing-object
+  behavior. This machine-local fixture repair must persist into validation.
+- Added deterministic SDK/HTTP regression coverage for the original denied-read
+  path, an unavailable endpoint, successful content/metadata reads, and AWS error
+  preservation with and without an underlying error. The tests restore the shared
+  client and bucket configuration. Existing integration tests remain intact.
+- Focused checks passed:
+  `godotenv -f .test.env go test ./app/services/blob -run '^TestBlobStorage/Test_S3_' -count=1`
+  and `godotenv -f .test.env go test ./app/services/blob/s3 -run 'Test(GetBlobByKey|Wrap)' -count=1`.
+  The regression command also passed with `-race`; `git diff --check` passed.
+  A standalone test invocation without godotenv failed at the existing environment
+  initializer because `JWT_SECRET` was absent; use the existing `.test.env` loader.
+- Full validation, fresh desktop/phone acceptance, independent review, email
+  delivery and publication remain unverified in this repair session. No push,
+  GitHub command, PR creation or merge was performed; SAHR owns these later stages.
