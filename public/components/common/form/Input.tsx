@@ -18,6 +18,7 @@ interface InputProps {
   noTabFocus?: boolean
   afterLabel?: JSX.Element
   icon?: SpriteSymbol
+  iconButtonLabel?: string
   maxLength?: number
   value?: string
   disabled?: boolean
@@ -26,7 +27,7 @@ interface InputProps {
   inputMode?: "text" | "numeric" | "decimal" | "tel" | "search" | "email" | "url"
   onIconClick?: () => void
   onFocus?: () => void
-  inputRef?: React.MutableRefObject<any>
+  inputRef?: React.Ref<HTMLInputElement>
   onChange?: (value: string) => void
   onKeyDown?: (e: KeyboardEvent) => void
 }
@@ -54,7 +55,15 @@ export const Input: React.FunctionComponent<InputProps> = (props) => {
 
   const suffix = typeof props.suffix === "string" ? <span className="c-input__suffix">{props.suffix}</span> : props.suffix
 
-  const icon = props.icon ? <Icon sprite={props.icon} onClick={props.onIconClick} className={classSet({ clickable: !!props.onIconClick })} /> : undefined
+  const icon = props.icon ? (
+    props.onIconClick && props.iconButtonLabel ? (
+      <button type="button" className="c-input__icon-button" aria-label={props.iconButtonLabel} onClick={props.onIconClick}>
+        <Icon sprite={props.icon} />
+      </button>
+    ) : (
+      <Icon sprite={props.icon} onClick={props.onIconClick} className={classSet({ clickable: !!props.onIconClick })} />
+    )
+  ) : undefined
 
   return (
     <ValidationContext.Consumer>
