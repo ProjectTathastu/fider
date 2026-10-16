@@ -47,6 +47,8 @@ import { t } from "@lingui/macro"
 import { useFider } from "@fider/hooks"
 import { useAttachments } from "@fider/hooks/useAttachments"
 
+import { SavePostButton } from "./SavePostButton"
+
 interface PostDetailsProps {
   postNumber: number
   onDataChanged?: () => void
@@ -494,6 +496,8 @@ export const PostDetails: React.FC<PostDetailsProps> = (props) => {
                 <ActionButton icon={IconDuplicate} onClick={onActionSelected("copy")}>
                   <Trans id="action.copylink">Copy link</Trans>
                 </ActionButton>
+
+                <SavePostButton key={post.number} postNumber={post.number} />
 
                 <div className="flex-grow" />
 
