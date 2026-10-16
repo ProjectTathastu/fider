@@ -64,3 +64,31 @@ criterion; record evidence and explicitly name anything not verified.
 - Full configured validation (including complete `make test`) remains owned by
   SAHR and was not run in this implementation stage. Publication is deferred to
   SAHR's later fork-only draft PR stage; no push, gh, PR or merge was performed.
+
+## Validation attempt 1 prerequisite repair
+
+- SAHR reported `make: godotenv: No such file or directory` at Makefile:76
+  for commit `d72d75f1`. Fresh inspection found no executable on PATH or at
+  `/usr/local/bin/godotenv`; the earlier prerequisite evidence above describes
+  the previous environment and does not establish setup in this session.
+- Makefile:76 loads `.test.env` for migrations and line 77 loads it for server
+  tests. `.github/workflows/build.yml` installs the CLI separately with
+  `go install github.com/joho/godotenv/cmd/godotenv`; go.mod pins v1.5.1.
+  The missing preview log supplies no evidence about runtime service health.
+  No database, storage, application or test changes were justified by this error.
+- Restored the existing prerequisite outside Git with
+  `env GOBIN=/tmp/fider-repair-tools go install github.com/joho/godotenv/cmd/godotenv`
+  and `sudo -n install -m 0755 /tmp/fider-repair-tools/godotenv /usr/local/bin/godotenv`.
+  Direct installation as the workspace user was denied by directory permissions.
+  `go version -m /usr/local/bin/godotenv` confirmed v1.5.1.
+- A Python subprocess probe with `PATH=/usr/local/bin:/usr/bin:/bin` resolved
+  the CLI, loaded a synthetic temporary env file and checked its value in a child
+  shell. A failing child and an absent env file both returned nonzero. The initial
+  probe incorrectly expected the child's exact exit code (23); the CLI returns
+  1. The corrected probe asserts failure propagation and passed all cases.
+  Temporary probe inputs were outside Git and contained no credentials.
+- No full validation commands were run. Fresh full-suite results, service-backed
+  acceptance, independent review and publication remain unverified in this repair
+  session; prior preview evidence was not repeated. Email delivery remains
+  unverified. SAHR owns full validation and later publication. This machine-local
+  installation must also be present if validation runs in a different environment.
