@@ -92,3 +92,39 @@ criterion; record evidence and explicitly name anything not verified.
   session; prior preview evidence was not repeated. Email delivery remains
   unverified. SAHR owns full validation and later publication. This machine-local
   installation must also be present if validation runs in a different environment.
+
+## Validation attempt 2 database prerequisite repair
+
+- The supplied excerpt stops during successful catalog extraction and omits the
+  actual error. The event log confirms validation failed, but the complete output
+  for command `01a9e441-254d-487c-8c47-7f12ff55b3aa` was not available in the
+  local session logs. The exact failing operation is therefore unconfirmed.
+  Existing binary, compiled catalog and SSR timestamps fall within the reported
+  16:21:02–16:21:12 UTC window; this alone does not prove validation success.
+- Bounded read-only inspection found a concrete prerequisite mismatch:
+  `pg_isready -h 127.0.0.1 -p 5566` reported no response, and
+  `godotenv -f .test.env` followed by a Python-managed `psql ... SELECT 1`
+  probe returned exit 2 with `Connection refused`. The effective endpoint was
+  localhost:5566. The existing PostgreSQL postmaster PID/port and its startup log
+  agreed on port 5432. Its log records listening on 5432 and readiness at
+  16:19:32 UTC, before the failed command. MinIO readiness returned HTTP 200;
+  storage authentication and operations were not repeated.
+- Restored a separate disposable PostgreSQL fixture outside Git at
+  `/tmp/fider-test-postgres-9vmyc2uo`, using `initdb` and
+  `pg_ctl ... -o '-h 127.0.0.1 -p 5566 -k <fixture-directory>' -w start`.
+  Created the role/database from the existing test environment and installed
+  `pg_trgm`. The existing 5432 service, tracked environment files, application,
+  migration behavior and tests were unchanged. No migration or configured
+  validation command was run; SAHR still owns schema migration and full tests.
+- Focused subprocess probes passed: the unmodified `.test.env` authenticated and
+  found `pg_trgm` (`SELECT 1, EXISTS (...)` returned `1|t`); a random incorrect
+  password failed authentication; a connection to an unavailable local port
+  failed with `Connection refused`. `pg_isready` now reports accepting
+  connections on 5566. These establish fixture readiness and failure reporting,
+  not application acceptance or a passing validation run. Fixture credentials
+  and logs remain outside Git.
+- No application repair was supported by the available evidence. Full tests,
+  fresh desktop/phone preview, independent review, email delivery and publication
+  remain unverified in this repair session. The database fixture is machine-local
+  and must be restored if validation uses another environment. No push, gh, PR
+  or merge was performed.
