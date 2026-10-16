@@ -70,7 +70,7 @@ export const ShareFeedback: React.FC<ShareFeedbackProps> = (props) => {
   })
   const [tags, setTags] = useState(getTagsCachedValue())
   const [error, setError] = useState<Failure | undefined>(undefined)
-  const titleRef = useRef<HTMLInputElement>()
+  const titleRef = useRef<HTMLInputElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
   const [titleManuallyEdited, setTitleManuallyEdited] = useState(prefillTemplate ? true : getTitleManuallyEditedValue())
   const [isInitialMount, setIsInitialMount] = useState(true)

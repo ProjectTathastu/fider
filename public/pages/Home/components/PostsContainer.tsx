@@ -39,6 +39,8 @@ export interface FilterState {
 }
 
 export class PostsContainer extends React.Component<PostsContainerProps, PostsContainerState> {
+  private searchInputRef = React.createRef<HTMLInputElement>()
+
   constructor(props: PostsContainerProps) {
     super(props)
 
@@ -60,7 +62,11 @@ export class PostsContainer extends React.Component<PostsContainerProps, PostsCo
     }
   }
 
-  private changeFilterCriteria<K extends keyof PostsContainerState>(obj: Pick<PostsContainerState, K>, reset: boolean): void {
+  private changeFilterCriteria<K extends keyof PostsContainerState>(
+    obj: Pick<PostsContainerState, K>,
+    reset: boolean,
+    onChangeComplete?: () => void
+  ): void {
     this.setState(obj, () => {
       const query = this.state.query.trim().toLowerCase()
       navigator.replaceState(
@@ -87,6 +93,7 @@ export class PostsContainer extends React.Component<PostsContainerProps, PostsCo
         this.state.filterState.noTags,
         reset
       )
+      onChangeComplete?.()
     })
   }
 
@@ -145,7 +152,7 @@ export class PostsContainer extends React.Component<PostsContainerProps, PostsCo
   }
 
   private clearSearch = () => {
-    this.changeFilterCriteria({ query: "" }, true)
+    this.changeFilterCriteria({ query: "" }, true, () => this.searchInputRef.current?.focus())
   }
 
   private showMore = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>): void => {
@@ -180,8 +187,10 @@ export class PostsContainer extends React.Component<PostsContainerProps, PostsCo
               field="query"
               icon={this.state.query ? IconX : IconSearch}
               onIconClick={this.state.query ? this.clearSearch : undefined}
+              iconButtonLabel={this.state.query ? i18n._({ id: "home.postscontainer.query.clear", message: "Clear search" }) : undefined}
               placeholder={i18n._({ id: "home.postscontainer.query.placeholder", message: "Search" })}
               value={this.state.query}
+              inputRef={this.searchInputRef}
               onChange={this.handleSearchFilterChanged}
             />
           </div>

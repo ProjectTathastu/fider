@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "Öne Çıkanlar",
   "home.postscontainer.label.noresults": "Aramanız bir sonuç vermedi, başka bir aramayı deneyin.",
   "home.postscontainer.label.viewmore": "Daha çok öneri görüntüle",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "Arama",
   "home.postsort.label": "Göre sırala:",
   "home.similar.title": "Benzer öneriler",

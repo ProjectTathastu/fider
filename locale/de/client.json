@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "Beliebt",
   "home.postscontainer.label.noresults": "Keine Ergebnisse entsprechen deiner Suche, versuche etwas anderes.",
   "home.postscontainer.label.viewmore": "Weitere Beiträge anschauen",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "Suche",
   "home.postsort.label": "Sortieren nach:",
   "home.similar.title": "Ähnliche Beiträge",

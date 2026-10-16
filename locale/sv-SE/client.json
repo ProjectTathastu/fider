@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "Trendar",
   "home.postscontainer.label.noresults": "Inga resultat matchar din sökning, prova något annat.",
   "home.postscontainer.label.viewmore": "Visa fler inlägg",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "Sök",
   "home.postsort.label": "Sortera efter:",
   "home.similar.title": "Liknande inlägg",

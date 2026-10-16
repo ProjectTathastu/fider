@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "Δημοφιλή",
   "home.postscontainer.label.noresults": "Δεν υπάρχουν αποτελέσματα που να ταιριάζουν με την αναζήτηση σας, δοκιμάστε κάτι διαφορετικό.",
   "home.postscontainer.label.viewmore": "Δείτε περισσότερες δημοσιεύσεις",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "Αναζήτηση",
   "home.postsort.label": "Ταξινόμηση κατά:",
   "home.similar.title": "Παρόμοιες προτάσεις",

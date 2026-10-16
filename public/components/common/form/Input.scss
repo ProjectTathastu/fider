@@ -54,6 +54,32 @@
     padding-inline-end: spacing(8);
   }
 
+  &__icon-button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 100%;
+    padding: spacing(2);
+    right: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-primary-base);
+      outline-offset: -2px;
+      border-radius: get("border.radius.medium");
+    }
+  }
+
   &--error {
     border-color: var(--colors-red-600);
   }
@@ -75,6 +101,11 @@
 :dir(rtl) .c-input {
   & + svg,
   & + img {
+    left: 0;
+    right: unset;
+  }
+
+  &__icon-button {
     left: 0;
     right: unset;
   }

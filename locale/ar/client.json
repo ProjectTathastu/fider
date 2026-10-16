@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "الشائع",
   "home.postscontainer.label.noresults": "لا توجد نتائج تطابق بحثك، جرب شيئا مختلفا.",
   "home.postscontainer.label.viewmore": "عرض المزيد من المنشورات",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "بحث",
   "home.postsort.label": "الترتيب بحسب:",
   "home.similar.title": "منشورات مماثلة",

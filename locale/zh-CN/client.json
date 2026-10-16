@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "趋势",
   "home.postscontainer.label.noresults": "没有与您的搜索匹配的结果，请尝试其他搜索.",
   "home.postscontainer.label.viewmore": "查看更多帖子",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "搜索",
   "home.postsort.label": "排序方式：",
   "home.similar.title": "类似帖子",

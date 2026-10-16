@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "Trending",
   "home.postscontainer.label.noresults": "No results matched your search, try something different.",
   "home.postscontainer.label.viewmore": "View more posts",
+  "home.postscontainer.query.clear": "Clear search",
   "home.postscontainer.query.placeholder": "Search",
   "home.postsort.label": "Sort by:",
   "home.similar.title": "We have similar posts, is your idea already on the list?",

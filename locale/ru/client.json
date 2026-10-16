@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "В тренде",
   "home.postscontainer.label.noresults": "Не удалось ничего найти. Попробуйте поискать что-то другое.",
   "home.postscontainer.label.viewmore": "Посмотреть больше постов",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "Поиск",
   "home.postsort.label": "Сортировать по:",
   "home.similar.title": "Похожие посты",
