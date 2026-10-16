@@ -119,6 +119,7 @@ var tenantScopedTables = []string{
 	"notifications",
 	"post_subscribers",
 	"post_votes",
+	"saved_posts",
 	"post_tags",
 	"comments",
 	"posts",
