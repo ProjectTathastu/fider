@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "トレンド",
   "home.postscontainer.label.noresults": "検索に一致する結果はありません。別のものを試してみてください。",
   "home.postscontainer.label.viewmore": "他の投稿を見る",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "検索",
   "home.postsort.label": "並べ替え：",
   "home.similar.title": "類似の投稿",

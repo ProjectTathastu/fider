@@ -66,6 +66,7 @@
   "home.postfilter.option.trending": "熱門趨勢",
   "home.postscontainer.label.noresults": "沒有符合您搜尋條件的結果，請嘗試其他關鍵字。",
   "home.postscontainer.label.viewmore": "查看更多文章",
+  "home.postscontainer.query.clear": "",
   "home.postscontainer.query.placeholder": "搜尋",
   "home.postsort.label": "排序方式：",
   "home.similar.title": "我們有類似的文章，您的想法是否已在清單中？",

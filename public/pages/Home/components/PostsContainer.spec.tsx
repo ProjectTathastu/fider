@@ -1,7 +1,9 @@
 import React from "react"
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import { actions } from "@fider/services"
+import { actions, Fider } from "@fider/services"
 import { PostsContainer } from "./PostsContainer"
+
+jest.mock("@fider/services/actions", () => ({ searchPosts: jest.fn() }))
 
 jest.mock("./ListPosts", () => ({
   ListPosts: ({ posts }: { posts?: Array<{ title: string }> }) => {
@@ -31,14 +33,15 @@ const finishSearch = async () => {
 describe("feedback search clear button", () => {
   beforeEach(() => {
     jest.useFakeTimers()
-    jest.spyOn(actions, "searchPosts").mockImplementation(async ({ query }) => ({
+    Fider.initialize({ settings: { baseURL: "" }, page: "", contextID: "", props: {} })
+    jest.mocked(actions.searchPosts).mockImplementation(async ({ query }) => ({
       ok: true,
       data: (query ? feedback.filter((post) => post.title.toLowerCase().includes(query)) : feedback) as any,
     }))
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    jest.clearAllMocks()
     jest.useRealTimers()
   })
 
@@ -55,6 +58,7 @@ describe("feedback search clear button", () => {
     expect(clearButton).toBeInTheDocument()
     await finishSearch()
 
+    expect(actions.searchPosts).toHaveBeenCalledWith(expect.objectContaining({ query: "matching" }))
     expect(screen.getByText("Matching feedback")).toBeInTheDocument()
     expect(screen.queryByText("Other feedback")).not.toBeInTheDocument()
 
@@ -66,6 +70,7 @@ describe("feedback search clear button", () => {
     expect(screen.getByText("Matching feedback")).toBeInTheDocument()
     expect(screen.getByText("Other feedback")).toBeInTheDocument()
     expect(document.activeElement).toBe(input)
+    expect(actions.searchPosts).toHaveBeenLastCalledWith(expect.objectContaining({ query: "" }))
   })
 
   test("clears search when the focused button is activated with the keyboard", async () => {
